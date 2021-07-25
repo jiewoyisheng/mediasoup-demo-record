@@ -273,6 +273,37 @@ async function createExpressApp()
 			}
 		});
 
+    /**
+	 * POST API to connect a Transport belonging to a Broadcaster. 
+	 * for PlainTransport 
+	 */
+	expressApp.post(
+		'/rooms/:roomId/broadcasters/:broadcasterId/transports/:transportId/plainconnect',
+		async (req, res, next) =>
+		{
+			const { broadcasterId, transportId } = req.params;
+			const { ip, port, rtcpport } = req.body;
+			logger.info("rtcpport %d",rtcpport);
+			
+			try
+			{
+				const data = await req.room.connectBroadcasterPlainTransport(
+					{
+						broadcasterId,
+						transportId,
+						ip,
+						port,
+						rtcpport
+					});
+
+				res.status(200).json(data);
+			}
+			catch (error)
+			{
+				next(error);
+			}
+		});
+
 	/**
 	 * POST API to create a mediasoup Producer associated to a Broadcaster.
 	 * The exact Transport in which the Producer must be created is signaled in
@@ -327,6 +358,29 @@ async function createExpressApp()
 					});
 
 				res.status(200).json(data);
+			}
+			catch (error)
+			{
+				next(error);
+			}
+		});
+    /**
+	 * POST API to consume.resume
+	 */
+	expressApp.post(
+		'/rooms/:roomId/broadcasters/:broadcasterId/consume/:consumeId/resume',
+		async (req, res, next) =>
+		{
+			const { broadcasterId, consumeId} = req.params;
+			logger.info("******in resume, consumeId:%s",String(consumeId));
+			try
+			{
+				const data = await req.room.consumerRsume(
+					{
+						broadcasterId,
+						consumeId,
+					});
+                res.status(200).json(data);
 			}
 			catch (error)
 			{

@@ -511,6 +511,50 @@ class Room extends EventEmitter
 		await transport.connect({ dtlsParameters });
 	}
 
+    /**
+	 * Connect a Broadcaster mediasoup PlanTransport.
+	 *
+	 * @async
+	 *
+	 * @type {String} broadcasterId
+	 * @type {String} transportId
+	 * @type .
+	 */
+	async connectBroadcasterPlainTransport(
+		{
+			broadcasterId,
+			transportId,
+			ip,
+			port,
+			rtcpport
+		}
+	)
+	{
+		const broadcaster = this._broadcasters.get(broadcasterId);
+
+		if (!broadcaster)
+			throw new Error(`broadcaster with id "${broadcasterId}" does not exist`);
+
+		const transport = broadcaster.data.transports.get(transportId);
+
+		if (!transport)
+			throw new Error(`transport with id "${transportId}" does not exist`);
+
+	//	if (transport.constructor.name !== 'WebRtcTransport')
+	//	{
+	//		throw new Error(
+	//			`transport with id "${transportId}" is not a WebRtcTransport`);
+	//	}
+		logger.info("do connect ip %s rtpport %d,rtcpport %d",String(ip),port, rtcpport);
+		await transport.connect({
+			 ip,
+		     port,
+			 rtcpPort:rtcpport
+		  });
+		return { id: transportId };
+	}
+
+
 	/**
 	 * Create a mediasoup Producer associated to a Broadcaster.
 	 *
@@ -615,7 +659,8 @@ class Room extends EventEmitter
 		const consumer = await transport.consume(
 			{
 				producerId,
-				rtpCapabilities : broadcaster.data.rtpCapabilities
+				rtpCapabilities : broadcaster.data.rtpCapabilities,
+                paused: true 
 			});
 
 		// Store it.
@@ -642,6 +687,43 @@ class Room extends EventEmitter
 			type          : consumer.type
 		};
 	}
+
+		/**
+	 * mediasoup Consumer resume.
+	 *
+	 * @async
+	 *
+	 * @type {String} broadcasterId
+	 * @type {String} producerId
+	 */
+         async consumerRsume(
+            {
+                broadcasterId,
+                consumeId
+            }
+        )
+        {
+            const broadcaster = this._broadcasters.get(broadcasterId);
+    
+            if (!broadcaster)
+                throw new Error(`broadcaster with id "${broadcasterId}" does not exist`);
+    
+            if (!broadcaster.data.rtpCapabilities)
+                throw new Error('broadcaster does not have rtpCapabilities');
+    
+            
+            // get consumer.
+            const consumer = broadcaster.data.consumers.get(consumeId);
+            logger.info("get consumer success consumerid %s",String(consumeId));
+            setTimeout(async () => {
+                await consumer.resume();
+              }, 1000);
+            return{
+                id    :consumeId
+            };
+    
+        }
+        
 
 	/**
 	 * Create a mediasoup DataConsumer associated to a Broadcaster.
