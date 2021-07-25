@@ -1,4 +1,4 @@
-# mediasoup-demo v3
+# Fork mediasoup-demo v3 
 
 A demo application of [mediasoup](https://mediasoup.org) **v3**.
 
@@ -16,9 +16,8 @@ Try it online at https://v3demo.mediasoup.org.
 * Clone the project:
 
 ```bash
-$ git clone https://github.com/versatica/mediasoup-demo.git
+$ git clone https://github.com/jiewoyisheng/mediasoup-demo-record.git
 $ cd mediasoup-demo
-$ git checkout v3
 ```
 
 * Ensure you have installed the [dependencies](https://mediasoup.org/documentation/v3/mediasoup/installation/#requirements) required by mediasoup to build.
@@ -115,12 +114,15 @@ $ MEDIASOUP_ANNOUNCED_IP=192.168.1.34 ./docker/run.sh
 * Make sure [TLS certificates](server/config.example.js#L24) reside in `server/certs` directory with names `fullchain.pem` and `privkey.pem`.
 * The default mediasoup port range is just 2000-2020, which is not suitable for production. You should increase it, however you should then run the container in `network="host"` mode.
 
-## Authors
+### record 
+* Make sure (broadcasters/ffmpeg_pull.sh) SERVER_URL=https://192.168.0.103:4443 is set .
+* Make sure (broadcasters/ffmpeg_pull.sh) ROOM_ID=cylybg0i is set .
+* Make sure (broadcasters/ffmpeg_pull.sh)PRODUCER_ID=c4a1ed8b-0d71-422d-a9c0-7fed44bf05bc is set, which you want record.
 
-* Iñaki Baz Castillo [[website](https://inakibaz.me)|[github](https://github.com/ibc/)]
-* José Luis Millán Villegas [[github](https://github.com/jmillan/)]
-
-
+```
+$ cd broadcasters
+$ ./ffmpeg_pull.sh
+```
 ## License
 
 MIT
