@@ -104,7 +104,7 @@ trap 'echo ">>> script exited with status code $?"; ${HTTPIE_COMMAND} DELETE ${S
 # over UDP. Do it via HTTP post specifying type:"plain" and comedia:false and
 # rtcpMux:false.
 #
-echo ">>> creating mediasoup PlainTransport for consumer audio..."
+echo ">>> creating mediasoup PlainTransport for consumer video..."
 
 res=$(${HTTPIE_COMMAND} \
 	POST ${SERVER_URL}/rooms/${ROOM_ID}/broadcasters/${BROADCASTER_ID}/transports \
@@ -134,7 +134,7 @@ ${HTTPIE_COMMAND} -v \
 #echo ${res}
 
 
-echo ">>> creating mediasoup audio consumer..."
+echo ">>> creating mediasoup video consumer..."
 
 res1=$(${HTTPIE_COMMAND} \
 	POST ${SERVER_URL}/rooms/${ROOM_ID}/broadcasters/${BROADCASTER_ID}/transports/${transportId}/consume?producerId=${PRODUCER_ID} \
